@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <title>Камеры</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='back1.png') }}");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="bottom_line">
+        <e1>Разработано LyceumSoft</e1>
+        <img src="{{ url_for('static', filename='logo.png') }}" align="right" width="64.8px" height="40.7px" hspace="25px">
+    </div>
+
+    <div class="scroll-container">
+        <div class="scroll-bar">
+            {% for video_file in video_files %}
+                {% set video_name = video_file.split('.')[0] %}
+                <button data-src="{{ url_for('static', filename=video_file) }}">{{ video_name }}</button>
+            {% endfor %}
+        </div>
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='Камера1.jpg') }}" id="image" width="900" height="600">
+        </div>
+    </div>
+    
+    <div class="bottom_line">
+        <e1>Разработано LyceumSoft</e1>
+        <img src="{{ url_for('static', filename='logo.png') }}" align="right" width="64.8px" height="40.7px" hspace="25px">
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            let imgpath = "Камера1.jpg";
+            const imageElement = $("#image");
+            const scrollBarButtons = $('.scroll-bar button');
+            scrollBarButtons.on('click', function() {
+                const buttonText = $(this).text();
+                
+                // Отправляем AJAX-запрос на сервер с текстом кнопки
+                $.ajax({
+                    url: "/get_image_name",
+                    type: "get",
+                    data: { button_text: buttonText },
+                    success: function(response) {
+                        imgpath = response.image_path;
+                        updateImage();
+                    },
+                    error: function(xhr) {
+                        // Обработка ошибок
+                    }
+                });
+
+            });
+            function updateImage() {
+                    currentImage = "{{ url_for('static', filename='') }}" + imgpath;
+                    $.ajax({
+                        url: "/test",
+                        type: "get",
+                        data: { text: currentImage },
+                        success: function(response) {
+                            $("#image").attr('src', currentImage);
+                        },
+                        error: function(xhr) {  
+                            // Обработка ошибок
+                        }
+                    });
+            };
+            setInterval(updateImage, 60);
+        });
+    </script>
+</body>
+</html>

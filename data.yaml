@@ -1,0 +1,5 @@
+train: F:\!factorysafezoneAI\dataset\train
+val: F:\!factorysafezoneAI\dataset\valid
+test: F:\!factorysafezoneAI\dataset\train
+nc: 1
+names: ['person']
