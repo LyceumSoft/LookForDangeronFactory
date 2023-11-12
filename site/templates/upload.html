@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Загрузка файла</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='back1.png') }}");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .bottom_line {
+            margin: 0 auto;
+            margin-top: 17.2%;
+            max-width: 100%;
+            height: 65px;
+            padding-top: 1%;
+            background-color: #01366f;
+            text-align: right;
+        }
+
+        e1 {
+            color: #ffffff;
+            margin-bottom: 10%;
+            font-size: 15px;
+            margin-right: -25px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            margin-top: 18%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 1200px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-top: 20px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Файл успешно обработан!</h1>
+        <img src="{{ url_for('static', filename=image_path) }}" alt="Uploaded Image">
+        <p><a href="/">Вернуться на главную страницу</a></p>
+    </div>
+    <div class="bottom_line">
+        <e1>Разработано LyceumSoft</e1>
+        <img src="{{ url_for('static', filename='logo.png') }}" align="right" width="64.8px" height="40.7px" hspace="25px">
+    </div>
+</body>
+</html>

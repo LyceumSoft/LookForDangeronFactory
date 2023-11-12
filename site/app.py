@@ -9,25 +9,20 @@ from flask import Flask, render_template, jsonify, request
 import PIL
 import cv2
 import time
-def read_logs():
-    static_folder = os.path.join(app.root_path, "static")
-    with open(f"{static_folder}/logs.txt", "r", encoding="utf-8") as file:
-        log_lines = file.readlines()
-    return log_lines
+import cv2
+import numpy as np
 
-def get_video_files():
-    static_folder = os.path.join(app.root_path, "static")
-    video_files = [f for f in os.listdir(static_folder) if f.endswith(".jpg")]
-    return video_files
-
-def generate_img():
-    video_files = get_video_files()
-
-def generate_image_path(button_text):
-    txt = button_text + ".jpg"
-    return txt
-
+from ultralytics import YOLO
+import cv2
+import cv2 as cv
+import cvzone
+import math
+import time
+import os
+import json
+from shapely.geometry import Point, Polygon
 app = Flask(__name__, static_url_path="/static")
+
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 @app.after_request
 def add_header(response):
@@ -44,31 +39,39 @@ def get_image_name():
     print(new_image_path)
     return jsonify({"image_path": new_image_path})
 
-@app.route('/test', methods=['GET'])
-def test(): 
-    text = request.args.get('text')
-    print(text)
-    return "true"
-
 @app.route('/')
 def home(): 
     return render_template('main.html')
-
-@app.route('/get_log_lines', methods=['GET'])
-def get_log_lines():
-    print("logsupd")
-    data = read_logs()
-    print(data)
-    return jsonify({"log_lines": data})
     
-@app.route('/cameras', methods=['POST'])
-def cameras():
-    return render_template('cameras.html')
+@app.route('/upload', methods=['POST'])
+def upload():
+    from roboflow import Roboflow
+    target_dir = "F:\!newgit\LookForDangeronFactory\site\static\\"
+    file = request.files['file']
+    file.save(target_dir + file.filename)
+    rf = Roboflow(api_key="6u6b1sk0YqWRx4fQPw3d")
+    project = rf.workspace().project("presondetext")
+    model = project.version(1).model
+    prediction_result = model.predict(f"F:\!newgit\LookForDangeronFactory\site\static\\{file.filename}", confidence=40, overlap=30).json()
+    print(prediction_result)
+    if 'predictions' in prediction_result and len(prediction_result['predictions']) > 0:
+            # Loop through all predictions
+            for i, prediction in enumerate(prediction_result['predictions']):
+                center_x = prediction['x']
+                center_y = prediction['y']
+                width = prediction['width']
+                height = prediction['height']
+                x1 = int(center_x - width / 2)
+                y1 = int(center_y - height / 2)
+                x2 = int(center_x + width / 2)
+                y2 = int(center_y + height / 2)
+                # Print the coordinates for each bounding box
+                print(f'Bbox {i + 1} Coordinates: x1={x1}, y1={y1}, x2={x2}, y2={y2}')
 
-@app.route('/logs', methods=['POST'])
-def logs(): 
-    log_lines = read_logs()
-    return render_template('logs.html', log_lines=log_lines)
+    model.predict(f"F:\!newgit\LookForDangeronFactory\site\static\\{file.filename}", confidence=40, overlap=30).save("F:\!newgit\LookForDangeronFactory\site\static\predicted_" + file.filename)
+    
+    image_path =  "predicted_" + file.filename
+    return render_template('upload.html', image_path=image_path)
 
 if __name__ == '__main__':
     app.run()

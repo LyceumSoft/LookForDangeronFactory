@@ -27,14 +27,12 @@
                 <p class="main-heading">Мониторинг опасных зон</p>
                 <p class="sub-heading">на металлургическом предприятии</p>
             </div>
-            <div class="buttons">
-                <form action="/cameras" method="post" enctype="multipart/form-data">
-                    <button type="submit" class="custom-btn">Камеры</button>
-                </form>
-                <form action="/logs" method="post" enctype="multipart/form-data">
-                    <button type="submit" class="custom-btn">Логи</button>
-                </form>
-            </div>
+            <p>Выберите файл для загрузки и нажмите кнопку "Загрузить"</p>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="file" class="custom-file-label">Выберите файл</label>
+                <input type="file" name="file" id="file" class="custom-file-input">
+                <button type="submit" class="custom-btn">Загрузить</button>
+            </form>
         </div>
     </div>
 </body>
